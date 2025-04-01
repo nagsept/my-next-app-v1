@@ -22,10 +22,10 @@ export async function POST(request) {
     // }
 
     // Insert the new user into the database
-    // await client.query(
-    //   'INSERT INTO users (username, email, password) VALUES ($1, $2, $3)',
-    //   [username, email, hashedPassword]
-    // );
+    await client.query(
+      'INSERT INTO users (username, email, password) VALUES ($1, $2, $3)',
+      [username, email, hashedPassword]
+    );
 
     return NextResponse.json({ message: 'User registered successfully' }, { status: 200 });
   } catch (error) {
