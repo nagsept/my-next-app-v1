@@ -10,28 +10,41 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const tokenCookie = document.cookie.split('; ').find(row => row.startsWith('token='));
+    try {
+      // 🔹 Log all cookies
+      console.log('All Cookies:', document.cookie);
 
-    if (!tokenCookie) {
-      router.push('/auth/login');
-    } else {
-      try {
-        const token = tokenCookie.split('=')[1];
-        const decoded = jwtDecode(token);
+      // 🔹 Find token in cookies
+      const tokenCookie = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('token='));
 
-        // Check if the token has expired
-        if (decoded.exp * 1000 < Date.now()) {
-          console.error('Token expired');
-          router.push('/auth/login');
-          return;
-        }
-
-        setUser(decoded);
-        setLoading(false);
-      } catch (error) {
-        console.error('Invalid token:', error);
+      if (!tokenCookie) {
+        console.error('Token not found in cookies');
         router.push('/auth/login');
+        return;
       }
+
+      // 🔹 Extract token value
+      const token = tokenCookie.split('=')[1];
+      console.log('Extracted Token:', token);
+
+      // 🔹 Decode token
+      const decoded = jwtDecode(token);
+      console.log('Decoded Token:', decoded);
+
+      // 🔹 Check expiry
+      if (decoded.exp * 1000 < Date.now()) {
+        console.error('Token expired');
+        router.push('/auth/login');
+        return;
+      }
+
+      setUser(decoded);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      router.push('/auth/login');
     }
   }, [router]);
 
