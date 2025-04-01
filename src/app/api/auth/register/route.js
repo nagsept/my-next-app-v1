@@ -5,7 +5,7 @@ import { Pool } from 'pg';
 
 // Use connection pooling instead of a single persistent client
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: 'postgres://postgres:Venki12345@database-1.cteuewyi47px.eu-north-1.rds.amazonaws.com:5432',
 });
 
 export async function POST(request) {
