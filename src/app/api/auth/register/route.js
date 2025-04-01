@@ -13,13 +13,13 @@ export async function POST(request) {
 
   // Hash the password
   const hashedPassword = await bcrypt.hash(password, 10);
-  console.log(username, hashedPassword);
+  console.log(username, hashedPassword, email);
   try {
     // Check if user already exists
-    const res = await client.query('SELECT * FROM users WHERE email = $1', [email]);
-    if (res.rows.length > 0) {
-      return NextResponse.json({ error: 'User already exists' }, { status: 400 });
-    }
+    // const res = await client.query('SELECT * FROM users WHERE email = $1', [email]);
+    // if (res.rows.length > 0) {
+    //   return NextResponse.json({ error: 'User already exists' }, { status: 400 });
+    // }
 
     // Insert the new user into the database
     // await client.query(
