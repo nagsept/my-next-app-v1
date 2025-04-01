@@ -28,7 +28,7 @@ export default function DashboardPage() {
       // 🔹 Extract token value
       const token = tokenCookie.split('=')[1];
       console.log('Extracted Token:', token);
-
+      console.log("jwtDecode function:", jwtDecode);
       // 🔹 Decode token
       const decoded = jwtDecode(token);
       console.log('Decoded Token:', decoded);
