@@ -10,7 +10,7 @@ export function middleware(request) {
   }
 
   try {
-    jwt.verify(token, process.env.JWT_SECRET);
+    jwt.verify(token, 'myjwtoken');
     return NextResponse.next();
   } catch (error) {
     console.error(error);
