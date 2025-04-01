@@ -1,5 +1,6 @@
 // src/app/auth/register/route.js
 import { NextResponse } from 'next/server';
+import bcrypt from 'bcryptjs';
 import { Client } from 'pg';
 
 const client = new Client({
@@ -7,15 +8,15 @@ const client = new Client({
 });
 client.connect();
 
-export async function POST() {
-  // const { username, email, password } = await request.json();
+export async function POST(request) {
+  const { username, email, password } = await request.json();
 
   // Hash the password
-  // const hashedPassword = await bcrypt.hash(password, 10);
-
+  const hashedPassword = await bcrypt.hash(password, 10);
+  console.log(username, hashedPassword);
   try {
     // Check if user already exists
-    const res = '';
+    const res = await client.query('SELECT * FROM users WHERE email = $1', [email]);
     if (res.rows.length > 0) {
       return NextResponse.json({ error: 'User already exists' }, { status: 400 });
     }
