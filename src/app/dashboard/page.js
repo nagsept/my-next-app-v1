@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import jwtDecode from "jwt-decode"; // Install with `npm install jwt-decode`
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import jwtDecode from 'jwt-decode';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -10,48 +10,47 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const cookie = document.cookie.split("; ").find(row => row.startsWith("token="));
-    if (!cookie) {
-      router.push("/auth/login");
-      return;
-    }
+    const tokenCookie = document.cookie.split('; ').find(row => row.startsWith('token='));
 
-    const token = cookie.split("=")[1];
+    if (!tokenCookie) {
+      router.push('/auth/login');
+    } else {
+      try {
+        const token = tokenCookie.split('=')[1];
+        const decoded = jwtDecode(token);
 
-    try {
-      const decoded = jwtDecode(token);
-      setUser(decoded);
-    } catch (error) {
-      console.error("Invalid token", error);
-      router.push("/auth/login");
-    } finally {
-      setLoading(false);
+        // Check if the token has expired
+        if (decoded.exp * 1000 < Date.now()) {
+          console.error('Token expired');
+          router.push('/auth/login');
+          return;
+        }
+
+        setUser(decoded);
+        setLoading(false);
+      } catch (error) {
+        console.error('Invalid token:', error);
+        router.push('/auth/login');
+      }
     }
   }, [router]);
-
-  const handleLogout = () => {
-    document.cookie = "token=; path=/; max-age=0"; // Clear token
-    router.push("/auth/login");
-  };
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <div className="p-6 bg-gray-100 rounded-lg shadow-md">
-        <h2 className="mb-4 text-lg font-semibold">Welcome, {user?.username}!</h2>
-        <p>Email: {user?.email}</p>
-        <p>User ID: {user?.id}</p>
-
-        <button
-          onClick={handleLogout}
-          className="w-full p-2 mt-4 text-white bg-red-500 rounded"
-        >
-          Logout
-        </button>
-      </div>
+    <div>
+      <h2>Welcome, {user?.username}!</h2>
+      <p>Email: {user?.email}</p>
+      <button
+        onClick={() => {
+          document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
+          router.push('/auth/login');
+        }}
+      >
+        Logout
+      </button>
     </div>
   );
 }
