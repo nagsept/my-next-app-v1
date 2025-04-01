@@ -5,7 +5,10 @@ import jwt from 'jsonwebtoken';
 import { Client } from 'pg';
 
 const client = new Client({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: 'postgres://postgres:Venki12345@database-1.cteuewyi47px.eu-north-1.rds.amazonaws.com:5432',
+  ssl: {
+    rejectUnauthorized: false, // Required for AWS RDS SSL connections
+  },
 });
 
 client.connect();
