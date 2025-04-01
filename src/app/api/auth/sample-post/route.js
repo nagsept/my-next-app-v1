@@ -1,5 +1,13 @@
 import { NextResponse } from 'next/server';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { Client } from 'pg';
 
+const client = new Client({
+  connectionString: process.env.DATABASE_URL,
+});
+
+client.connect();
 export async function POST() {
   return NextResponse.json({ message: 'Hello' }, {
     status: 200,
